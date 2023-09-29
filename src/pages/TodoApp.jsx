@@ -5,12 +5,16 @@ export const TodoApp = () => {
   // Lógica para almacenar los todos
   //useState devuelve un array de 2 objetos
   const [todoList, setTodoList] = useState([])
+  
   const [todo, setTodo] = useState("")
 
+
+  // Lógica para añadir un todo
   const inputChange = ({ target }) => {
     setTodo(target.value)
   }
 
+  // Lógica para completar un todo
   //RECORRER LA LISTA DE TODO Y MODIFICAR DONE
   const completeTodo = ({ target }) => {
     const todos = todoList.map(todo => {
@@ -23,9 +27,35 @@ export const TodoApp = () => {
     setTodoList(todos);
   }
 
-  // Lógica para añadir un todo
+  //Lógica para eliminar to do's compleatados
+  const clearCompletedTodos = () => {
+    const todosPendientes = todoList.filter(todo => !todo.done);
+    setTodoList(todosPendientes);
+  };
 
-  // Lógica para completar un todo
+  //Lógica para eliminar todos los to do's
+  const clearAllTodo = () => {
+      setTodoList([])
+  }
+
+  //Lógica para completar todos los to do's
+  const completeAll = () => {
+    const todosCompletados = todoList.map((todo) => ({
+      ...todo,
+      done: true,
+    }));
+    setTodoList(todosCompletados);
+  };
+
+  //Lógica para cancelar todos los to do's
+  const cancelAll = () => {
+    const todosCompletados = todoList.map((todo) => ({
+      ...todo,
+      done: false,
+    }));
+    setTodoList(todosCompletados);
+  };
+
 
   return (
     <div className="container">
@@ -39,10 +69,22 @@ export const TodoApp = () => {
       {/* TodoFilter */}
       <div className="row mb-3">
         <div className="col d-flex gap-1">
-          <button className="btn btn-sm btn-primary">All</button>
-          <button className="btn btn-sm btn-success">Active</button>
-          <button className="btn btn-sm btn-danger">Completed</button>
-          <button className="btn btn-sm btn-warning">Clear Completed</button>
+          <button className="btn btn-sm btn-primary"
+            onClick={clearAllTodo}
+          >Clear All</button>
+
+          <button className="btn btn-sm btn-warning"
+            onClick={cancelAll}
+          >Active</button>
+
+
+          <button className="btn btn-sm btn-success"
+            onClick={completeAll}
+          >Completed</button>
+
+          <button className="btn btn-sm btn-danger"
+            onClick={clearCompletedTodos}
+          >Clear Completed</button>
         </div>
       </div>
 
@@ -53,7 +95,7 @@ export const TodoApp = () => {
           <input
             type="text"
             className="form-control"
-            placeholder="Add Todo"
+            placeholder="Add To do"
             name="todo"
             onChange={inputChange}
             value={todo}
@@ -64,10 +106,10 @@ export const TodoApp = () => {
 
             // Evento cuando presiona tecla Enter en ASCII
             onKeyUpCapture={({ key }) => {
-              if (key === "Enter") {
+              if (key === "Enter" && todo !== "") {
 
                 setTodoList([
-                  ...setTodoList,
+                  ...todoList,
                   {
                     id: new Date().getTime(),
                     desc: todo,
@@ -75,6 +117,7 @@ export const TodoApp = () => {
 
                   }
                 ])
+                setTodo("")
               }
             }}
           />
@@ -86,20 +129,22 @@ export const TodoApp = () => {
           <ul className="list-unstyled">
             {/* TodoList Item */}
             {
-
               (todoList.length === 0)
                 ? (
-                  <li className="alert alert-info">No hay to do's</li>
+                  <li className="alert alert-primary">No hay to do's</li>
                 )
                 :
                 (todoList.map(todo => (
                   < li
                     key={todo.id}
-                    className="d-flex justify-content-between mb-2 alert"
+                    className={`d-flex justify-content-between mb-2 alert ${(todo.done) ? "alert-success" : "alert-warning"}`}
                   >
                     <span>{todo.desc}</span>
                     <button
-                      className={`btn btn-sm ${(todo.done) ? "btn-success" : "btn-warning"}`}>
+                      className={`btn btn-sm ${(todo.done) ? "btn-success" : "btn-warning"}`}
+                      id={todo.id}
+                      onClick={completeTodo}
+                    >
                       {(todo.done) ? "Completada" : "Pendiente"}</button>
 
                   </li>
