@@ -1,11 +1,12 @@
 import { useState } from "react"
+import { AddTodo } from "../components/AddTodo.jsx"
+import { TodoList } from "../components/SetListItem.jsx"
 
 export const TodoApp = () => {
 
   // Lógica para almacenar los todos
   //useState devuelve un array de 2 objetos
   const [todoList, setTodoList] = useState([])
-  
   const [todo, setTodo] = useState("")
 
 
@@ -35,7 +36,7 @@ export const TodoApp = () => {
 
   //Lógica para eliminar todos los to do's
   const clearAllTodo = () => {
-      setTodoList([])
+    setTodoList([])
   }
 
   //Lógica para completar todos los to do's
@@ -91,68 +92,24 @@ export const TodoApp = () => {
       {/* TodoAdd */}
       <div className="row mb-3">
         <div className="col-sm-12 col-md-4 mb-2 mb-md-3 mb-lg-0 form-control">
-          <h3>New Todo</h3>
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Add To do"
-            name="todo"
-            onChange={inputChange}
-            value={todo}
-            // onChange={setTodo}
-            //recibe todos los datos del input, como si fuera setTodo(e)
-            //Otra forma de hacerlo onChange={(e)=>{setTodo({[e.target.name]:e.target.value})}} requiere que tenga el "name=""
-            // Evento cuando cambia el valor del input
-
-            // Evento cuando presiona tecla Enter en ASCII
-            onKeyUpCapture={({ key }) => {
-              if (key === "Enter" && todo !== "") {
-
-                setTodoList([
-                  ...todoList,
-                  {
-                    id: new Date().getTime(),
-                    desc: todo,
-                    done: false
-
-                  }
-                ])
-                setTodo("")
-              }
-            }}
+          <AddTodo
+            inputChange={inputChange}
+            setTodoList={setTodoList}
+            todo={todo}
+            todoList={todoList}
+            setTodo={setTodo}
           />
         </div>
 
         {/* TodoList */}
         <div className="col-sm-12 col-md-8">
           <h3>Todo List</h3>
-          <ul className="list-unstyled">
-            {/* TodoList Item */}
-            {
-              (todoList.length === 0)
-                ? (
-                  <li className="alert alert-primary">No hay to do's</li>
-                )
-                :
-                (todoList.map(todo => (
-                  < li
-                    key={todo.id}
-                    className={`d-flex justify-content-between mb-2 alert ${(todo.done) ? "alert-success" : "alert-warning"}`}
-                  >
-                    <span>{todo.desc}</span>
-                    <button
-                      className={`btn btn-sm ${(todo.done) ? "btn-success" : "btn-warning"}`}
-                      id={todo.id}
-                      onClick={completeTodo}
-                    >
-                      {(todo.done) ? "Completada" : "Pendiente"}</button>
-
-                  </li>
-                ))
-                )
-            }
-          </ul>
-
+          <TodoList
+          todoList={todoList}
+          todo={todo}
+          completeTodo={completeTodo}
+          />
+      
         </div>
       </div>
     </div >
