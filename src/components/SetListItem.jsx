@@ -1,5 +1,5 @@
 
-export const TodoList = ({ todoList, todo, setTodoList }) => {
+export const SetListItem = ({ todoList, todo, setTodoList }) => {
 
 
   // Lógica para completar un to do
@@ -22,7 +22,7 @@ export const TodoList = ({ todoList, todo, setTodoList }) => {
       <ul className="list-unstyled">
         {/* TodoList Item */}
         {
-          (todoList.length === 0)
+          (todoList?.length === 0)
             ? (
               <li className="alert alert-primary">No hay to do's</li>
             )

@@ -1,7 +1,7 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 //useState devuelve un array de 2 objetos
 import { AddTodo } from "../components/AddTodo.jsx"
-import { TodoList } from "../components/SetListItem.jsx"
+import { SetListItem } from "../components/SetListItem.jsx"
 
 export const TodoApp = () => {
 
@@ -11,6 +11,25 @@ export const TodoApp = () => {
   const [todoList, setTodoList] = useState([])
   const [todo, setTodo] = useState("")
 
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //USE EFFECTS
+  //ni bien se ejecuta, va a todolist en el localStorage y revisa si hay algo (cada vez que se redibuja, se recarga la pagina, etc)
+  useEffect(() => {
+    const todos = JSON.parse(localStorage.getItem("todoList")) ?? []
+    setTodoList(todos);
+    console.log("se ejecuto");
+  }, [])
+
+  //si la lista de todos ya tiene algo, 
+  useEffect(() => {
+
+    if (todoList.length < 1) {
+      return
+    }
+
+    localStorage.setItem("todoList", JSON.stringify(todoList));
+  }, [todoList])
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //Lógica para eliminar to do's compleatados
   const clearCompletedTodos = () => {
     const todosPendientes = todoList.filter(todo => !todo.done);
@@ -86,8 +105,8 @@ export const TodoApp = () => {
         {/* TodoList */}
         <div className="col-sm-12 col-md-8">
           <h3>Todo List</h3>
-          <TodoList
-            todoList={todoList}
+          <SetListItem
+            todoList={todoList || []}
             todo={todo}
             setTodoList={setTodoList}
           />
